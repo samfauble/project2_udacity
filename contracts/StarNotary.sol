@@ -7,9 +7,9 @@ contract StarNotary is ERC721 {
     string _name;
     string _symbol;
 
-    constructor (string memory name, string memory symbol) ERC721(name, symbol) public {
-        _name = name;
-        _symbol = symbol;
+    constructor (string memory name, string memory symbol) ERC721(_name, _symbol) public {
+      _symbol = symbol;
+      _name = name;
     }
 
     struct Star {
@@ -19,12 +19,42 @@ contract StarNotary is ERC721 {
     mapping(uint256 => Star) public tokenIdToStarInfo;
     mapping(uint256 => uint256) public starsForSale;
 
+    function getName () public view returns (string memory) {
+        return _name;
+    }
+
+    function getSymbol () public view returns (string memory) {
+        return _symbol;
+    }
+
+    // Looks up a star by Id and returns the name
+    function lookUpTokenIdToStarInfo(uint256 tokenId) public view returns (string memory starName) {
+        starName = tokenIdToStarInfo[tokenId].name;
+        return starName;
+    }
+
+    // exchanges stars between 2 addresses
+    function exchangeStars (uint256 tokenId1, uint256 tokenId2) public returns (bool success) {
+        address client1 = ownerOf(tokenId1);
+        address client2 = ownerOf(tokenId2);
+
+        transferFrom(client1, client2, tokenId1);
+        transferFrom(client2, client1, tokenId2);
+
+        success = true;
+    }
+
+    // transfers a star from sender to another address
+    function transferStar (address to, uint256 tokenId) public returns (bool success) {
+        transferFrom(msg.sender, to, tokenId);
+        success = true;
+    }
 
     // Create Star using the Struct
-    function createStar(string memory _name, uint256 _tokenId) public { // Passing the name and tokenId as a parameters
+    function createStar(string memory _name, uint256 _tokenId, address owner) public { // Passing the name and tokenId as a parameters
         Star memory newStar = Star(_name); // Star is an struct so we are creating a new Star
         tokenIdToStarInfo[_tokenId] = newStar; // Creating in memory the Star -> tokenId mapping
-        _mint(msg.sender, _tokenId); // _mint assign the the star with _tokenId to the sender address (ownership)
+        _mint(owner, _tokenId); // _mint assign the the star with _tokenId to the sender address (ownership)
     }
 
     // Putting an Star for sale (Adding the star tokenid into the mapping starsForSale, first verify that the sender is the owner)
@@ -32,7 +62,6 @@ contract StarNotary is ERC721 {
         require(ownerOf(_tokenId) == msg.sender, "You can't sale the Star you don't owned");
         starsForSale[_tokenId] = _price;
     }
-
 
     // Function that allows you to convert an address into a payable address
     function _make_payable(address x) internal pure returns (address payable) {

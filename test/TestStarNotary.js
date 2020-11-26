@@ -1,3 +1,6 @@
+const chai = require("chai");
+const assert = chai.assert;
+
 const StarNotary = artifacts.require("StarNotary");
 
 var accounts;
@@ -7,6 +10,64 @@ contract('StarNotary', (accs) => {
     accounts = accs;
     owner = accounts[0];
 });
+
+it('should return contract name', async () => {
+    let instance = await StarNotary.deployed();
+    let name = await instance.getName();
+    assert.equal(name, "SparklyStars");
+});
+
+it('should return contract symbol', async () => {
+    let instance = await StarNotary.deployed();
+    let symbol = await instance.getSymbol();
+    assert.equal(symbol, "SS");
+});
+
+it('should exchange the stars of 2 users', async () => {
+    //setup
+    let instance = await StarNotary.deployed();
+    let owner1 = owner;
+    let owner2 = accounts[1];
+    let id1 = 123;
+    let id2 = 456;
+    await instance.createStar("pretty star", id1, owner1);
+    await instance.createStar("grand star", 456, owner2); 
+    
+    //assert before exchange
+    let beforeTestOwner1 = await instance.ownerOf(id1);
+    let beforeTestOwner2 = await instance.ownerOf(id2);
+    assert.equal(beforeTestOwner1, owner1);
+    assert.equal(beforeTestOwner2, owner2);
+
+    await instance.exchangeStars(id1, id2);
+
+    //after exchange
+    let testOwner1 = await instance.ownerOf(id1);
+    let testOwner2 = await instance.ownerOf(id2);
+    assert.equal(testOwner1, owner2);
+    assert.equal(testOwner2, owner1);
+});
+
+it('should transfer a star to another user', async () => {
+    //setup
+    let instance = await StarNotary.deployed();
+    let owner1 = owner;
+    let owner2 = accounts[1];
+    let id1 = 123456;
+    await instance.createStar("pretty star", id1, owner1);
+
+    
+    //assert before exchange
+    let beforeTestOwner1 = await instance.ownerOf(id1);
+    assert.equal(beforeTestOwner1, owner1);
+
+    await instance.transferStar(owner2, id1);
+
+    //after exchange
+    let testOwner1 = await instance.ownerOf(id1);
+    assert.equal(testOwner1, owner2);
+});
+
 
 it('can Create a Star', async() => {
     let tokenId = 1;
