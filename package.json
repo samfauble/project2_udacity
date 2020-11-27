@@ -1,0 +1,31 @@
+{
+  "name": "starNotaryProject",
+  "version": "1.0.0",
+  "description": "token name: \"SparklyStars\"\r token symbol: \"SS\"\r token address: 0x8FD97E4fE7bF48a60c2c6B94AC36868C2a89796c",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "openzeppelin-solidity": "^3.2.0",
+    "truffle-hdwallet-provider": "^1.0.17"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samfauble/project2_udacity.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samfauble/project2_udacity/issues"
+  },
+  "homepage": "https://github.com/samfauble/project2_udacity#readme"
+}

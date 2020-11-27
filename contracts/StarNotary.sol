@@ -18,6 +18,21 @@ contract StarNotary is ERC721 {
 
     mapping(uint256 => Star) public tokenIdToStarInfo;
     mapping(uint256 => uint256) public starsForSale;
+    mapping(address => uint256) public accounts;
+
+    modifier isOwnerOf (uint256 tokenId) {
+        require(ownerOf(tokenId) == msg.sender);
+        _;
+    }
+
+    modifier isExchangeOwner (address owner1, address owner2, uint256 token1, uint256 token2) {
+        address tokenOwner1 = ownerOf(token1);
+        address tokenOwner2 = ownerOf(token2);
+
+        require(tokenOwner1 == owner1);
+        require(tokenOwner2 == owner2);
+        _;
+    }
 
     function getName () public view returns (string memory) {
         return _name;
@@ -34,9 +49,7 @@ contract StarNotary is ERC721 {
     }
 
     // exchanges stars between 2 addresses
-    function exchangeStars (uint256 tokenId1, uint256 tokenId2) public returns (bool success) {
-        address client1 = ownerOf(tokenId1);
-        address client2 = ownerOf(tokenId2);
+    function exchangeStars (address client1, address client2, uint256 tokenId1, uint256 tokenId2) public isExchangeOwner (client1, client2, tokenId1, tokenId2) returns (bool success) {
 
         transferFrom(client1, client2, tokenId1);
         transferFrom(client2, client1, tokenId2);
@@ -45,7 +58,7 @@ contract StarNotary is ERC721 {
     }
 
     // transfers a star from sender to another address
-    function transferStar (address to, uint256 tokenId) public returns (bool success) {
+    function transferStar (address to, uint256 tokenId) public isOwnerOf(tokenId) returns (bool success) {
         transferFrom(msg.sender, to, tokenId);
         success = true;
     }

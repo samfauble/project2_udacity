@@ -1,14 +1,8 @@
-const HDWalletProvider = require('@truffle/hdwallet-provider');
-let seed = "";
+const HDWalletProvider = require('truffle-hdwallet-provider');
+let seed = "sample fire idle broken garlic final grape dinner modify tuna nut fury";
 
-let provider = () => {
-    return new HDWalletProvider({
-    mnemonic: {
-      phrase: seed
-    },
-    providerOrUrl: "https://rinkeby.infura.io/v3/KEY"
-  });
-}
+let provider = () =>  new HDWalletProvider(seed, "https://rinkeby.infura.io/v3/44ea9bed0cda4d8889867eb43fe221ba");
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -38,7 +32,7 @@ module.exports = {
        network_id: "4",
        gas: 4500000,
        gasPrice: 10000000000,
-       networkCheckTimeout: 6000
+       skipDryRun: true
     },
 
     development: {

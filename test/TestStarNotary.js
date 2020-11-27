@@ -39,7 +39,7 @@ it('should exchange the stars of 2 users', async () => {
     assert.equal(beforeTestOwner1, owner1);
     assert.equal(beforeTestOwner2, owner2);
 
-    await instance.exchangeStars(id1, id2);
+    await instance.exchangeStars(owner1, owner2, id1, id2);
 
     //after exchange
     let testOwner1 = await instance.ownerOf(id1);
