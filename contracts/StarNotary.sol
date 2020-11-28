@@ -25,12 +25,8 @@ contract StarNotary is ERC721 {
         _;
     }
 
-    modifier isExchangeOwner (address owner1, address owner2, uint256 token1, uint256 token2) {
-        address tokenOwner1 = ownerOf(token1);
-        address tokenOwner2 = ownerOf(token2);
-
-        require(tokenOwner1 == owner1);
-        require(tokenOwner2 == owner2);
+    modifier isExchangeOwner (uint256 token1, uint256 token2) {
+        require(ownerOf(token1) == msg.sender || ownerOf(token2) == msg.sender);
         _;
     }
 
@@ -49,7 +45,9 @@ contract StarNotary is ERC721 {
     }
 
     // exchanges stars between 2 addresses
-    function exchangeStars (address client1, address client2, uint256 tokenId1, uint256 tokenId2) public isExchangeOwner (client1, client2, tokenId1, tokenId2) returns (bool success) {
+    function exchangeStars (uint256 tokenId1, uint256 tokenId2) public isExchangeOwner (tokenId1, tokenId2) returns (bool success) {
+        address client1 = ownerOf(tokenId1);
+        address client2 = ownerOf(tokenId2);
 
         transferFrom(client1, client2, tokenId1);
         transferFrom(client2, client1, tokenId2);
@@ -82,16 +80,20 @@ contract StarNotary is ERC721 {
     }
 
     function buyStar(uint256 _tokenId) public  payable {
-        require(starsForSale[_tokenId] > 0, "The Star should be up for sale");
+        require(starsForSale[_tokenId] >=0, "The Star should be up for sale");
         uint256 starCost = starsForSale[_tokenId];
         address ownerAddress = ownerOf(_tokenId);
-        require(msg.value > starCost, "You need to have enough Ether");
+        require(msg.value >= starCost, "You need to have enough Ether");
         transferFrom(ownerAddress, msg.sender, _tokenId); // We can't use _addTokenTo or_removeTokenFrom functions, now we have to use _transferFrom
         address payable ownerAddressPayable = _make_payable(ownerAddress); // We need to make this conversion to be able to use transfer() function to transfer ethers
         ownerAddressPayable.transfer(starCost);
-        if(msg.value > starCost) {
+        if(msg.value >= starCost) {
             msg.sender.transfer(msg.value - starCost);
         }
+    }
+
+    function getMsgSender() public view returns(address) {
+        return msg.sender;
     }
 
 }
