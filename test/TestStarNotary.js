@@ -27,7 +27,7 @@ it('should exchange the stars of 2 users', async () => {
     //setup
     let instance = await StarNotary.deployed();
     let owner1 = await instance.getMsgSender();
-    let owner2 = accounts[1];
+    let owner2 = await instance.getMsgSender();
     let id1 = 123;
     let id2 = 456;
     await instance.createStar("pretty star", id1, owner1);
