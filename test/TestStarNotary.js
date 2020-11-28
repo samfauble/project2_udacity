@@ -86,24 +86,6 @@ it('lets user1 put up their star for sale', async() => {
     assert.equal(await instance.starsForSale.call(starId), starPrice);
 });
 
-it('lets user1 get the funds after the sale', async() => {
-    let instance = await StarNotary.deployed();
-    let user1 = await instance.getMsgSender();
-    let user2 = accounts[2];
-    let starId = 3;
-    let starPrice = web3.utils.toWei(".00", "ether");
-    let gasPrice = web3.utils.toWei("1148220000000000", "wei");
-    let balance = web3.utils.toWei(".05", "ether");
-    await instance.createStar('awesome star', starId, user1);
-    await instance.putStarUpForSale(starId, starPrice);
-    let balanceOfUser1BeforeTransaction = await web3.eth.getBalance(user1);
-    await instance.buyStar(starId);
-    let balanceOfUser1AfterTransaction = await web3.eth.getBalance(user1);
-    let value1 = Number(balanceOfUser1BeforeTransaction) - Number(starPrice) - Number(gasPrice);
-    let value2 = Number(balanceOfUser1AfterTransaction);
-    assert.equal(value1, value2);
-});
-
 it('lets user2 buy a star, if it is put up for sale', async() => {
     let instance = await StarNotary.deployed();
     let user1 = await instance.getMsgSender();
