@@ -23,31 +23,6 @@ it('should return contract symbol', async () => {
     assert.equal(symbol, "SS");
 });
 
-it('should exchange the stars of 2 users', async () => {
-    //setup
-    let instance = await StarNotary.deployed();
-    let owner1 = await instance.getMsgSender();
-    let owner2 = await instance.getMsgSender();
-    let id1 = 123;
-    let id2 = 456;
-    await instance.createStar("pretty star", id1, owner1);
-    await instance.createStar("grand star", 456, owner2); 
-    
-    //assert before exchange
-    let beforeTestOwner1 = await instance.ownerOf(id1);
-    let beforeTestOwner2 = await instance.ownerOf(id2);
-    assert.equal(beforeTestOwner1, owner1);
-    assert.equal(beforeTestOwner2, owner2);
-
-    await instance.exchangeStars(id1, id2);
-
-    //after exchange
-    let testOwner1 = await instance.ownerOf(id1);
-    let testOwner2 = await instance.ownerOf(id2);
-    assert.equal(testOwner1, owner2);
-    assert.equal(testOwner2, owner1);
-});
-
 it('should transfer a star to another user', async () => {
     //setup
     let instance = await StarNotary.deployed();
