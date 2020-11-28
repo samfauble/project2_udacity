@@ -29,7 +29,7 @@ it('should transfer a star to another user', async () => {
     let owner1 = owner;
     let owner2 = accounts[1];
     let id1 = 123456;
-    await instance.createStar("pretty star", id1, owner1);
+    await instance.createStar("pretty star", id1);
 
     
     //assert before exchange
@@ -47,7 +47,7 @@ it('should transfer a star to another user', async () => {
 it('can Create a Star', async() => {
     let tokenId = 1;
     let instance = await StarNotary.deployed();
-    await instance.createStar('Awesome Star!', tokenId, accounts[0])
+    await instance.createStar('Awesome Star!', tokenId)
     assert.equal(await instance.tokenIdToStarInfo.call(tokenId), 'Awesome Star!')
 });
 
@@ -56,7 +56,7 @@ it('lets user1 put up their star for sale', async() => {
     let user1 = await instance.getMsgSender();
     let starId = 2;
     let starPrice = web3.utils.toWei(".01", "ether");
-    await instance.createStar('awesome star', starId, user1);
+    await instance.createStar('awesome star', starId);
     await instance.putStarUpForSale(starId, starPrice);
     assert.equal(await instance.starsForSale.call(starId), starPrice);
 });
@@ -68,7 +68,7 @@ it('lets user2 buy a star, if it is put up for sale', async() => {
     let starId = 4;
     let starPrice = web3.utils.toWei(".00", "ether");
     let balance = web3.utils.toWei(".05", "ether");
-    await instance.createStar('awesome star', starId, user1);
+    await instance.createStar('awesome star', starId);
     await instance.putStarUpForSale(starId, starPrice);
     let balanceOfUser1BeforeTransaction = await web3.eth.getBalance(user2);
     await instance.buyStar(starId);
@@ -82,7 +82,7 @@ it('lets user2 buy a star and decreases its balance in ether', async() => {
     let starId = 5;
     let starPrice = web3.utils.toWei(".00", "ether");
     let balance = web3.utils.toWei(".05", "ether");
-    await instance.createStar('awesome star', starId, user1);
+    await instance.createStar('awesome star', starId);
     await instance.putStarUpForSale(starId, starPrice);
     let balanceOfUser1BeforeTransaction = await web3.eth.getBalance(user2);
     const balanceOfUser2BeforeTransaction = await web3.eth.getBalance(user2);

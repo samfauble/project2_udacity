@@ -32,18 +32,18 @@ const App = {
   },
 
   createStar: async function() {
-    const { createStar, getMsgSender } = this.meta.methods;
+    const { createStar } = this.meta.methods;
     const name = document.getElementById("starName").value;
     const id = document.getElementById("starId").value;
-    const sender = await getMsgSender();
-    await createStar(name, id, sender).send({from: this.account});
+    //const sender = await getMsgSender().send({from: this.account});
+    await createStar(name, id).send({from: this.account});
     App.setStatus("New Star Owner is " + this.account + ".");
   },
 
   checkTokenId: async function() {
     const { lookUpTokenIdToStarInfo } = this.meta.methods;
     const id = document.getElementById("starId").value;
-    const name = await lookUpTokenIdToStarInfo(id);
+    const name = await lookUpTokenIdToStarInfo(id).call();
     App.setStatus("Star name is: " + name + ".");
   }
 
